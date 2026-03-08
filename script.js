@@ -133,7 +133,7 @@ async function loadMessages(){
 
 try{
 
-typingBox.innerHTML = "Loading messages...";
+typingBox.innerHTML = "Loading messages.";
 
 const res = await fetch(API);
 const data = await res.json();
@@ -173,7 +173,7 @@ lastMessageCount = data.length;
 
 if(lastTypingUser && lastTypingUser !== user){
 
-typingBox.innerHTML = lastTypingUser + " is typing...";
+typingBox.innerHTML = lastTypingUser + " is typing.";
 
 }else{
 
@@ -197,7 +197,7 @@ typingBox.innerHTML = "Error loading messages.";
 // SEND MESSAGE
 async function sendMessage(message){
 
-typingBox.innerHTML = "Sending...";
+typingBox.innerHTML = "Sending.";
 
 try{
 
@@ -272,7 +272,7 @@ return;
 
 }
 
-typingBox.innerHTML = "Sending image...";
+typingBox.innerHTML = "Sending image.";
 
 const reader = new FileReader();
 
@@ -435,3 +435,4 @@ function startStressGraph(){
 
 // START GRAPH ON PAGE LOAD
 startStressGraph();
+
