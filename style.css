@@ -369,3 +369,10 @@ overflow-x:auto;
 pre{
 overflow-x:auto;
 }
+
+.timestamp{
+color:#00ff00;
+opacity:0.5;
+font-size:11px;
+margin-right:6px;
+}
