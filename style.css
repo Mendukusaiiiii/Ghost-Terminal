@@ -84,12 +84,8 @@ padding:0;
 
 
 #terminal{
-
-/* use percentage width for responsiveness */
-width:90%;
-max-width:800px;
+width:1000px;
 margin:40px auto;
-
 }
 
 #chat{
@@ -104,12 +100,7 @@ box-sizing: border-box;
 
 }
 
-/* adjust for narrow viewports */
-@media (max-width:600px) {
-    #chat { height:300px; }
-    h3 { font-size:1.5em; margin-top:0; }
-    #terminal { margin:20px auto; }
-}
+
 
 
 #input{
@@ -141,6 +132,34 @@ font-size:14px;
 box-sizing: border-box;
 margin-top:5px;
 
+}
+
+#inputRow{
+display:flex;
+gap:8px;
+margin-top:5px;
+}
+
+#sendBtn{
+background:black;
+color:#00ff00;
+border:1px solid #00ff00;
+padding:10px 16px;
+cursor:pointer;
+font-family:inherit;
+font-size:16px;
+}
+
+#sendBtn:hover{
+background:#00ff00;
+color:black;
+}
+
+#sendBtn:active{
+transform:scale(0.95);
+}
+#input{
+flex:1;
 }
 
 #typing{
@@ -277,4 +296,77 @@ animation:blink 1s infinite;
 #cpuValue, #memValue, #netValue {
     font-weight: bold;
     color: #00ff00;
+}
+
+/* MOBILE UI ZOOM + CLEAN LAYOUT */
+@media (max-width: 700px){
+
+body{
+font-size:18px;
+}
+
+/* terminal wider */
+#terminal{
+width:95%;
+margin:10px auto;
+}
+
+/* chat bigger */
+#chat{
+height:55vh;
+font-size:16px;
+}
+
+/* bigger typing box */
+#typing{
+font-size:15px;
+}
+
+/* message input bigger */
+#input{
+font-size:18px;
+padding:14px;
+}
+
+/* image input */
+#imageInput{
+font-size:16px;
+padding:10px;
+}
+
+/* login UI */
+#loginScreen input,
+#loginScreen button{
+width:80%;
+font-size:18px;
+padding:10px;
+}
+
+/* header spacing */
+#header{
+gap:15px;
+}
+
+/* server graph larger */
+#stressGraphContainer{
+width:95%;
+}
+
+#stressStats span{
+font-size:14px;
+}
+
+/* ascii banner responsive */
+#title pre,
+#loginScreen pre{
+font-size:9px;
+line-height:9px;
+overflow-x:auto;
+}
+
+}
+
+pre{
+white-space:pre;
+overflow-x:auto;
 }

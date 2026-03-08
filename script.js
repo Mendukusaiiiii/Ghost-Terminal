@@ -4,6 +4,7 @@ const chat = document.getElementById("chat");
 const input = document.getElementById("input");
 const typingBox = document.getElementById("typing");
 const loginText = document.getElementById("login");
+const sendBtn = document.getElementById("sendBtn");
 
 const loginScreen = document.getElementById("loginScreen");
 const terminal = document.getElementById("terminal");
@@ -242,6 +243,19 @@ input.value="";
 }
 
 });
+
+// SEND BUTTON CLICK
+sendBtn.onclick = function(){
+
+const msg = input.value.trim();
+
+if(msg !== ""){
+sendMessage(msg);
+}
+
+input.value = "";
+
+};
 
 // IMAGE SEND
 imageInput.addEventListener("change",function(e){
