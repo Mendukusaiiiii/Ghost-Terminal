@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Ghost Terminal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="loginScreen">
+
+<pre>
+                                                                                  
+ ▄▄▄▄▄▄▄  ▄▄                       ▄▄▄▄▄▄▄▄▄                                   ▄▄ 
+███▀▀▀▀▀  ██                 ██    ▀▀▀███▀▀▀                   ▀▀              ██ 
+███       ████▄ ▄███▄ ▄█▀▀▀ ▀██▀▀     ███ ▄█▀█▄ ████▄ ███▄███▄ ██  ████▄  ▀▀█▄ ██ 
+███  ███▀ ██ ██ ██ ██ ▀███▄  ██       ███ ██▄█▀ ██ ▀▀ ██ ██ ██ ██  ██ ██ ▄█▀██ ██ 
+▀██████▀  ██ ██ ▀███▀ ▄▄▄█▀  ██       ███ ▀█▄▄▄ ██    ██ ██ ██ ██▄ ██ ██ ▀█▄██ ██
+</pre>
+
+<input id="usernameInput" placeholder="Enter Username: (leave blank for anonymous)" maxlength="30">
+
+<button id="loginBtn">Login</button>
+
+<div id="stressGraphContainer">
+  <div id="stressLabel">Server Status:</div>
+  <canvas id="stressCanvas" width="700" height="150"></canvas>
+  <div id="stressStats">
+    <span>CPU: <span id="cpuValue">0</span> %</span>
+    <span>Memory: <span id="memValue">0</span> %</span>
+    <span>Network: <span id="netValue">0</span> %</span>
+  </div>
+</div>
+
+<p class="footer">&copy; 2026 Mendukusai. All Rights Reserved.</p>
+
+</div>
+
+
+<div id="terminal" style="display:none">
+
+<div id="title">
+<pre>
+                                                                                  
+ ▄▄▄▄▄▄▄  ▄▄                       ▄▄▄▄▄▄▄▄▄                                   ▄▄ 
+███▀▀▀▀▀  ██                 ██    ▀▀▀███▀▀▀                   ▀▀              ██ 
+███       ████▄ ▄███▄ ▄█▀▀▀ ▀██▀▀     ███ ▄█▀█▄ ████▄ ███▄███▄ ██  ████▄  ▀▀█▄ ██ 
+███  ███▀ ██ ██ ██ ██ ▀███▄  ██       ███ ██▄█▀ ██ ▀▀ ██ ██ ██ ██  ██ ██ ▄█▀██ ██ 
+▀██████▀  ██ ██ ▀███▀ ▄▄▄█▀  ██       ███ ▀█▄▄▄ ██    ██ ██ ██ ██▄ ██ ██ ▀█▄██ ██
+</pre>
+</div>
+
+<div id="header">
+<div id="login"></div>
+<div id="serverStatus" style="display:none">Server: <span id="statusIndicator">●</span> <span id="statusText">Checking...</span></div>
+<button id="backBtn">Back to Login</button>
+</div>
+
+<div id="chat"></div>
+
+<div id="typing"></div>
+
+<input id="input" placeholder="Message:">
+
+<input type="file" id="imageInput" accept="image/*" style="margin-top:5px;">
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

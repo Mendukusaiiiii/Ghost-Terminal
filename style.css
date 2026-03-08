@@ -1,0 +1,280 @@
+body{
+
+background:black;
+color:#00ff00;
+font-family:Consolas,monospace;
+margin:0;
+padding:0;
+
+}
+
+/* center login screen */
+#loginScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+#loginScreen input,
+#loginScreen button {
+    margin: 8px 0;
+    width: 50%;
+    font-size: 1em; /* slightly larger than default */
+    padding: 6px;
+    border: 1px solid #00ff00;
+    background: black;
+    color: #00ff00;
+}
+
+#loginBtn {
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+#loginBtn:hover {
+    background: #00ff00;
+    color: black;
+}
+
+#loginBtn:active {
+    animation: clickPulse 0.3s ease;
+}
+
+@keyframes clickPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+#backBtn {
+    padding: 6px 12px;
+    border: 1px solid #00ff00;
+    background: black;
+    color: #00ff00;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-family: inherit;
+    font-size: 0.9em;
+}
+
+#backBtn:hover {
+    background: #00ff00;
+    color: black;
+}
+
+#backBtn:active {
+    animation: clickPulse 0.3s ease;
+}
+
+#loginScreen h3 {
+    font-size: 1.8em;
+    margin-bottom: 16px;
+    border: 1px solid #00ff00;
+    padding: 5px;
+}
+
+.footer {
+    margin-top: auto;
+    font-size: 0.8em;
+    opacity: 0.7;
+    margin-bottom: 20px;
+}
+
+
+#terminal{
+
+/* use percentage width for responsiveness */
+width:90%;
+max-width:800px;
+margin:40px auto;
+
+}
+
+#chat{
+
+/* let height be relative on small screens */
+height:400px;
+overflow-y:auto;
+border:1px solid #00ff00;
+padding:10px;
+/* ensure consistent box sizing for width calculations */
+box-sizing: border-box;
+
+}
+
+/* adjust for narrow viewports */
+@media (max-width:600px) {
+    #chat { height:300px; }
+    h3 { font-size:1.5em; margin-top:0; }
+    #terminal { margin:20px auto; }
+}
+
+
+#input{
+
+width:100%;
+background:black;
+color:#00ff00;
+/* added border to message box */
+border:1px solid #00ff00;
+padding:10px;
+outline:none;
+font-family:inherit;
+font-size:16px;
+/* match chat width including padding/border */
+box-sizing: border-box;
+
+}
+
+#imageInput{
+
+width:100%;
+background:black;
+color:#00ff00;
+border:1px solid #00ff00;
+padding:5px;
+outline:none;
+font-family:inherit;
+font-size:14px;
+box-sizing: border-box;
+margin-top:5px;
+
+}
+
+#typing{
+
+font-style:italic;
+opacity:0.7;
+border:1px solid #00ff00;
+padding:5px;
+margin-top:5px;
+
+}
+
+.username {
+    color: #00ffff;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.messageContent {
+    color: #00ff00;
+    opacity: 0.9;
+}
+
+#header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#login {
+    border: 1px solid #00ff00;
+    padding: 5px;
+}
+
+#serverStatus {
+    border: 1px solid #00ff00;
+    padding: 5px;
+    font-size: 0.9em;
+    flex: 1;
+    min-width: 150px;
+}
+
+#statusIndicator {
+    font-weight: bold;
+    animation: pulse 1s infinite;
+}
+
+#statusIndicator.online {
+    color: #00ff00;
+    animation: none;
+}
+
+#statusIndicator.offline {
+    color: #ff0000;
+    animation: none;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+.cursor{
+
+animation:blink 1s infinite;
+
+}
+
+@keyframes blink{
+
+0%{opacity:1;}
+50%{opacity:0;}
+100%{opacity:1;}
+
+}
+
+#title {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#title pre {
+    display: inline-block;
+    margin: 0;
+}
+
+/* Server Stress Load Graph */
+#stressGraphContainer {
+    border: 1px solid #00ff00;
+    padding: 10px;
+    margin-top: 15px;
+    background-color: rgba(0, 255, 0, 0.05);
+    width: 90%;
+    max-width: 500px;
+    box-sizing: border-box;
+}
+
+#stressLabel {
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    font-weight: bold;
+    border-bottom: 1px solid #00ff00;
+    padding-bottom: 5px;
+}
+
+#stressCanvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    background-color: #000;
+    border: 1px solid #003300;
+    image-rendering: pixelated;
+}
+
+#stressStats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 8px;
+    font-size: 0.85em;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#stressStats span {
+    border: 1px solid #00ff00;
+    padding: 3px 8px;
+    min-width: 80px;
+    text-align: center;
+}
+
+#cpuValue, #memValue, #netValue {
+    font-weight: bold;
+    color: #00ff00;
+}
