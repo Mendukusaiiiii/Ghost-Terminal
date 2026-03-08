@@ -89,9 +89,21 @@ statusText.textContent = "Offline";
 
 
 // TERMINAL PRINT
-function typeLine(username, content){
+function typeLine(username, content, timestamp){
 
 const line = document.createElement("div");
+
+const time = document.createElement("span");
+time.className = "timestamp";
+
+if(timestamp){
+const d = new Date(timestamp);
+time.textContent = "[" + d.toLocaleDateString() + " " + d.toLocaleTimeString() + "] ";
+}else{
+time.textContent = "[unknown] ";
+}
+
+line.appendChild(time);
 
 const userLabel = document.createElement("span");
 userLabel.className = "username";
@@ -119,7 +131,6 @@ line.appendChild(textSpan);
 }
 
 chat.appendChild(line);
-
 }
 
 
@@ -157,7 +168,8 @@ const typing = row[3];
 
 if(message && message.trim() !== ""){
 
-typeLine(username, message);
+const timestamp = row[0];
+typeLine(username, message, timestamp)
 
 }
 
