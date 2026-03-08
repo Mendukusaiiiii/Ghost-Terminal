@@ -435,4 +435,3 @@ function startStressGraph(){
 
 // START GRAPH ON PAGE LOAD
 startStressGraph();
-
