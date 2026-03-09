@@ -44,7 +44,7 @@ user = name;
 loginScreen.style.display = "none";
 terminal.style.display = "block";
 
-loginText.innerHTML = "logged in as " + user;
+loginText.innerHTML = "Logged in as " + user;
 
 serverStatus.style.display = "block";
 loadMessages();
