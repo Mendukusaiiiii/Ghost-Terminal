@@ -154,7 +154,7 @@ async function loadMessages(){
 
 try{
 
-typingBox.innerHTML = "Loading message.";
+typingBox.innerHTML = "Loading Message.";
 
 const res = await fetch(API);
 const data = await res.json();
@@ -207,7 +207,7 @@ updateJumpButton();
 }catch(err){
 
 console.error("Fetch error:",err);
-typingBox.innerHTML = "Error loading messages.";
+typingBox.innerHTML = "Error Loading Messages.";
 
 }
 
@@ -238,7 +238,7 @@ typingBox.innerHTML = "";
 }catch(err){
 
 console.error("Send error:",err);
-typingBox.innerHTML = "Error sending message.";
+typingBox.innerHTML = "Error Sending Message.";
 
 }
 
