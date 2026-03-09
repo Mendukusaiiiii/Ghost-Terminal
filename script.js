@@ -1,4 +1,4 @@
-const API = "https://script.google.com/macros/s/AKfycbyBRZT28RL0mN-k9OY5C84N9vwz6UJfVtx41UyvJrUA4uBEajuHrqFnPwKNK89QLC6D/exec";
+const API = "https://script.google.com/macros/s/AKfycbyT9jNwi156DJn3PubrnruWlxZ_Udb_gC5BchAFZDUtSAtdgZFvRy4H6tFfzUMQvGlS/exec";
 
 const chat = document.getElementById("chat");
 const input = document.getElementById("input");
