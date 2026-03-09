@@ -13,6 +13,7 @@ const usernameInput = document.getElementById("usernameInput");
 const loginBtn = document.getElementById("loginBtn");
 const imageInput = document.getElementById("imageInput");
 const backBtn = document.getElementById("backBtn");
+const jumpBtn = document.getElementById("jumpBtn");
 
 let user = "";
 let lastMessageCount = 0;
@@ -20,6 +21,7 @@ let serverOnline = false;
 
 let loadInterval;
 let statusInterval;
+let pendingImage = null;
 
 const statusIndicator = document.getElementById("statusIndicator");
 const statusText = document.getElementById("statusText");
@@ -47,6 +49,12 @@ loginText.innerHTML = "logged in as " + user;
 serverStatus.style.display = "block";
 loadMessages();
 
+
+setTimeout(() => {
+  const chat = document.getElementById("chat");
+  chat.scrollTop = chat.scrollHeight;
+}, 300);
+
 loadInterval = setInterval(loadMessages,2000);
 
 checkServerStatus();
@@ -62,7 +70,9 @@ location.reload();
 };
 
 
-
+jumpBtn.onclick = function(){
+  chat.scrollTop = chat.scrollHeight;
+};
 
 
 // CHECK SERVER STATUS
@@ -144,16 +154,19 @@ async function loadMessages(){
 
 try{
 
-typingBox.innerHTML = "Loading messages.";
+typingBox.innerHTML = "Loading message.";
 
 const res = await fetch(API);
 const data = await res.json();
 
 if(data.length === lastMessageCount){
   typingBox.innerHTML = "";
-  return;
+}else{
+  typingBox.innerHTML = "New Message!";
+  setTimeout(function(){
+    typingBox.innerHTML = "";
+  }, 1200);
 }
-
 chat.innerHTML = "";
 
 let lastTypingUser = "";
@@ -184,16 +197,12 @@ lastTypingUser = username;
 lastMessageCount = data.length;
 
 if(lastTypingUser && lastTypingUser !== user){
-
 typingBox.innerHTML = lastTypingUser + " is typing.";
-
-}else{
-
-typingBox.innerHTML = "";
-
 }
 
-chat.scrollTop = chat.scrollHeight;
+lastMessageCount = data.length;
+
+updateJumpButton();
 
 }catch(err){
 
@@ -201,6 +210,7 @@ console.error("Fetch error:",err);
 typingBox.innerHTML = "Error loading messages.";
 
 }
+
 
 }
 
@@ -214,17 +224,14 @@ typingBox.innerHTML = "Sending.";
 try{
 
 await fetch(API,{
-
 method:"POST",
-
 body:new URLSearchParams({
-
 user:user,
 message:message
-
 })
-
 });
+
+chat.scrollTop = chat.scrollHeight;
 
 typingBox.innerHTML = "";
 
@@ -256,55 +263,65 @@ input.value="";
 
 });
 
+input.addEventListener("input", function(){
+
+if(pendingImage && input.value.trim() !== "[Image File Selected: " + pendingImage.name + " Delete this text to cancel]"){
+pendingImage = null;
+}
+
+});
+
 // SEND BUTTON CLICK
 sendBtn.onclick = function(){
 
 const msg = input.value.trim();
 
-if(msg !== ""){
+if(pendingImage){
+sendMessage(pendingImage);
+pendingImage = null;
+input.value = "";
+}
+else if(msg !== ""){
 sendMessage(msg);
+input.value = "";
 }
 
-input.value = "";
+};
+
+jumpBtn.onclick = function(){
+
+chat.scrollTop = chat.scrollHeight;
+
+updateJumpButton();
 
 };
 
 // IMAGE SEND
-imageInput.addEventListener("change",function(e){
+imageInput.addEventListener("change", function(e){
 
 const file = e.target.files[0];
-
-if(file){
+if(!file) return;
 
 if(file.size > 100 * 1024 * 1024){
-
 alert("File too large. Maximum size is 100MB.");
 imageInput.value = "";
 return;
-
 }
-
-typingBox.innerHTML = "Sending image.";
 
 const reader = new FileReader();
 
 reader.onload = function(event){
 
-sendMessage(event.target.result);
+pendingImage = event.target.result;
 
-};
-
-reader.onerror = function(){
-
-typingBox.innerHTML = "Error sending image.";
+/* put indicator inside message box */
+input.value = "[Image File Selected: " + file.name + " Delete this text to cancel]";
 
 };
 
 reader.readAsDataURL(file);
 
 imageInput.value = "";
-
-}
 
 });
 
@@ -447,3 +464,18 @@ function startStressGraph(){
 
 // START GRAPH ON PAGE LOAD
 startStressGraph();
+
+function updateJumpButton(){
+
+const nearBottom =
+chat.scrollHeight - chat.scrollTop - chat.clientHeight < 10;
+
+if(nearBottom){
+jumpBtn.style.display = "none";
+}else{
+jumpBtn.style.display = "block";
+}
+
+}
+
+chat.addEventListener("scroll", updateJumpButton);
