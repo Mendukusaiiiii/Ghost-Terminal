@@ -282,7 +282,7 @@ input.value="";
 
 input.addEventListener("input", function(){
 
-if(pendingImage && input.value.trim() !== "[Image File Selected: " + pendingImage.name + " Delete this text to cancel]"){
+if(pendingImage && input.value.trim() !== "[File Selected: " + pendingImage.name + "] Delete this text to cancel."){
 pendingImage = null;
 }
 
@@ -332,7 +332,7 @@ reader.onload = function(event){
 pendingImage = event.target.result;
 
 // Indicator inside the message box.
-input.value = "[Image File Selected: " + file.name + "] Delete this text to cancel";
+input.value = "[File Selected: " + file.name + "] Delete this text to cancel.";
 
 };
 
