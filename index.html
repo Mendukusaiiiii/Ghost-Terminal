@@ -3,7 +3,7 @@
 
 <head>
 <title>Ghost Terminal</title>
-<link rel="icon" type="image/x-icon" href="assets/GT.ico">
+<link rel="icon" type="image/x-icon" href="Assets/GT.ico">
 <meta name="viewport" content="width=900, initial-scale=0.6">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -25,13 +25,24 @@
 
 <button id="loginBtn">Login</button>
 
-<div id="stressGraphContainer">
-  <div id="stressLabel">Server Status:</div>
-  <canvas id="stressCanvas" width="700" height="150"></canvas>
-  <div id="stressStats">
-    <span>CPU: <span id="cpuValue">0</span> %</span>
-    <span>Memory: <span id="memValue">0</span> %</span>
-    <span>Network: <span id="netValue">0</span> %</span>
+<div id="calendarContainer">
+  <div id="calendarLabel">Calendar:</div>
+  <div id="calendar"></div>
+</div>
+
+<button id="aboutBtn">About</button>
+
+<div id="aboutBox" style="display:none">
+  <div id="aboutContent">
+    <h3>About Ghost Terminal</h3>
+    <p>Ghost Terminal is a real-time bulletin board site where everyone can share what's on their minds, either their interests, emotions, or thoughts. This is a safe space. GO CRAZY!!!</p>
+    <ul>
+      <p>Features include:</p>
+      <li>Real-time messaging</li>
+      <li>Anonymous login option</li>
+      <li>Image/GIF sharing</li>
+    </ul>
+    <button id="closeAboutBtn">Close</button>
   </div>
 </div>
 
@@ -76,7 +87,7 @@ Server: <span id="statusIndicator">●</span> <span id="statusText">Checking.</s
 
 
 
-<input type="file" id="imageInput" accept="image/*" style="margin-top:5px;">
+<input type="file" id="imageInput" accept="image/*,.gif" style="margin-top:5px;">
 
 </div>
 

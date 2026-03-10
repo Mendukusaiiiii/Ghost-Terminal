@@ -8,7 +8,7 @@ padding:0;
 
 }
 
-/* center login screen */
+/* Center login screen */
 #loginScreen {
     display: flex;
     flex-direction: column;
@@ -21,7 +21,7 @@ padding:0;
 #loginScreen button {
     margin: 8px 0;
     width: 50%;
-    font-size: 1em; /* slightly larger than default */
+    font-size: 1em; 
     padding: 6px;
     border: 1px solid #00ff00;
     background: black;
@@ -90,31 +90,24 @@ margin:40px auto;
 
 #chat{
 
-/* let height be relative on small screens */
 height:400px;
 overflow-y:auto;
 border:1px solid #00ff00;
 padding:10px;
-/* ensure consistent box sizing for width calculations */
 box-sizing: border-box;
 
 }
-
-
-
 
 #input{
 
 width:100%;
 background:black;
 color:#00ff00;
-/* added border to message box */
 border:1px solid #00ff00;
 padding:10px;
 outline:none;
 font-family:inherit;
 font-size:16px;
-/* match chat width including padding/border */
 box-sizing: border-box;
 
 }
@@ -122,16 +115,33 @@ box-sizing: border-box;
 #imageInput{
 
 width:100%;
-background:black;
-color:#00ff00;
-border:1px solid #00ff00;
-padding:5px;
+background:transparent;
+color:transparent;
+border:none;
+padding:0;
 outline:none;
 font-family:inherit;
 font-size:14px;
 box-sizing: border-box;
 margin-top:5px;
 
+}
+
+#imageInput::file-selector-button {
+    background: black;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    padding: 10px 40px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#imageInput::file-selector-button:hover {
+    background: #00ff00;
+    color: black;
 }
 
 #inputRow{
@@ -235,8 +245,8 @@ margin-bottom:10px;
     margin: 0;
 }
 
-/* Server Stress Load Graph */
-#stressGraphContainer {
+/* Calendar */
+#calendarContainer {
     border: 1px solid #00ff00;
     padding: 10px;
     margin-top: 15px;
@@ -246,7 +256,7 @@ margin-bottom:10px;
     box-sizing: border-box;
 }
 
-#stressLabel {
+#calendarLabel {
     font-size: 0.9em;
     margin-bottom: 5px;
     font-weight: bold;
@@ -254,73 +264,136 @@ margin-bottom:10px;
     padding-bottom: 5px;
 }
 
-#stressCanvas {
-    display: block;
+.calendar-table {
     width: 100%;
-    height: auto;
-    background-color: #000;
-    border: 1px solid #003300;
-    image-rendering: pixelated;
+    border-collapse: collapse;
+    font-size: 0.8em;
 }
 
-#stressStats {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 8px;
-    font-size: 0.85em;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-#stressStats span {
+.calendar-table th, .calendar-table td {
     border: 1px solid #00ff00;
-    padding: 3px 8px;
-    min-width: 80px;
+    padding: 5px;
     text-align: center;
+    width: 14.28%;
 }
 
-#cpuValue, #memValue, #netValue {
+.calendar-table th {
+    background-color: rgba(0, 255, 0, 0.1);
     font-weight: bold;
-    color: #00ff00;
 }
 
-/* MOBILE UI ZOOM + CLEAN LAYOUT */
+.calendar-table .today {
+    background-color: rgba(0, 255, 0, 0.2);
+    font-weight: bold;
+}
+
+/*About box*/
+#aboutBox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#aboutContent {
+    background: black;
+    border: 1px solid #00ff00;
+    padding: 20px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    color: #00ff00;
+    font-size: 0.9em;
+}
+
+#aboutContent h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #00ff00;
+    padding-bottom: 10px;
+}
+
+#aboutContent ul {
+    text-align: left;
+    list-style-type: none;
+    padding: 0;
+}
+
+#aboutContent li {
+    margin: 5px 0;
+}
+
+#closeAboutBtn {
+    margin-top: 15px;
+    padding: 8px 16px;
+    border: 1px solid #00ff00;
+    background: black;
+    color: #00ff00;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+#closeAboutBtn:hover {
+    background: #00ff00;
+    color: black;
+}
+
+#aboutBtn {
+    margin-top: 10px;
+    padding: 4px 8px;
+    border: 1px solid #00ff00;
+    background: black;
+    color: #00ff00;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-family: inherit;
+    font-size: 0.8em;
+    width: 70%;
+    max-width: 350px;
+    box-sizing: border-box;
+}
+
+#aboutBtn:hover {
+    background: #00ff00;
+    color: black;
+}
+
 @media (max-width: 700px){
 
 body{
 font-size:18px;
 }
 
-/* terminal wider */
+
 #terminal{
 width:95%;
 margin:10px auto;
 }
 
-/* chat bigger */
 #chat{
 height:55vh;
 font-size:16px;
 }
 
-/* bigger typing box */
 #typing{
 font-size:15px;
 }
 
-/* message input bigger */
 #input{
 font-size:18px;
 padding:14px;
 }
 
-/* image input */
 #imageInput{
 font-size:16px;
 padding:10px;
 }
 
-/* login UI */
 #loginScreen input,
 #loginScreen button{
 width:80%;
@@ -328,12 +401,10 @@ font-size:18px;
 padding:10px;
 }
 
-/* header spacing */
 #header{
 gap:15px;
 }
 
-/* server graph larger */
 #stressGraphContainer{
 width:95%;
 }
@@ -342,7 +413,6 @@ width:95%;
 font-size:14px;
 }
 
-/* ascii banner responsive */
 #title pre,
 #loginScreen pre{
 font-size:9px;
@@ -363,7 +433,6 @@ font-size:11px;
 margin-right:6px;
 }
 
-/* FILE INPUT BUTTON */
 #imageInput::file-selector-button{
 background:black;
 color:#00ff00;
@@ -379,7 +448,6 @@ background:#00ff00;
 color:black;
 }
 
-/* TERMINAL SCROLLBAR */
 #chat::-webkit-scrollbar{
 width:10px;
 }
@@ -416,3 +484,5 @@ color:black;
 #jumpBtn:active{
 transform:scale(0.96);
 }
+
+

@@ -1,4 +1,15 @@
+//what are you looking at. ._.
+
+
 const API = "https://script.google.com/macros/s/AKfycbyT9jNwi156DJn3PubrnruWlxZ_Udb_gC5BchAFZDUtSAtdgZFvRy4H6tFfzUMQvGlS/exec";
+
+
+document.addEventListener("dragover", function(e) {
+    e.preventDefault();
+});
+document.addEventListener("drop", function(e) {
+    e.preventDefault();
+});
 
 const chat = document.getElementById("chat");
 const input = document.getElementById("input");
@@ -14,6 +25,9 @@ const loginBtn = document.getElementById("loginBtn");
 const imageInput = document.getElementById("imageInput");
 const backBtn = document.getElementById("backBtn");
 const jumpBtn = document.getElementById("jumpBtn");
+const aboutBtn = document.getElementById("aboutBtn");
+const closeAboutBtn = document.getElementById("closeAboutBtn");
+const aboutBox = document.getElementById("aboutBox");
 
 let user = "";
 let lastMessageCount = 0;
@@ -28,7 +42,7 @@ const statusText = document.getElementById("statusText");
 const serverStatus = document.getElementById("serverStatus");
 
 
-// LOGIN
+// Login
 loginBtn.onclick = function(){
 
 let name = usernameInput.value.trim();
@@ -62,7 +76,7 @@ statusInterval = setInterval(checkServerStatus,5000);
 
 };
 
-// BACK TO LOGIN
+// Back to login
 backBtn.onclick = function(){
 
 location.reload();
@@ -74,8 +88,18 @@ jumpBtn.onclick = function(){
   chat.scrollTop = chat.scrollHeight;
 };
 
+// About button
+aboutBtn.onclick = function(){
+  aboutBox.style.display = "flex";
+};
 
-// CHECK SERVER STATUS
+// Close about
+closeAboutBtn.onclick = function(){
+  aboutBox.style.display = "none";
+};
+
+
+// Check server status
 async function checkServerStatus(){
 
 try{
@@ -96,9 +120,12 @@ statusText.textContent = "Offline";
 
 }
 
+// Terminal output
+function makeLinksClickable(text) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+}
 
-
-// TERMINAL PRINT
 function typeLine(username, content, timestamp){
 
 const line = document.createElement("div");
@@ -120,7 +147,7 @@ userLabel.className = "username";
 userLabel.textContent = username + "> ";
 line.appendChild(userLabel);
 
-if(content.startsWith("data:image/")){
+if(content.includes("data:image/")){
 
 const img = document.createElement("img");
 img.src = content;
@@ -135,7 +162,7 @@ line.appendChild(img);
 
 const textSpan = document.createElement("span");
 textSpan.className = "messageContent";
-textSpan.textContent = content;
+textSpan.innerHTML = makeLinksClickable(content);
 line.appendChild(textSpan);
 
 }
@@ -143,13 +170,7 @@ line.appendChild(textSpan);
 chat.appendChild(line);
 }
 
-
-
-
-
-
-
-// LOAD MESSAGES
+// Load message
 async function loadMessages(){
 
 try{
@@ -214,9 +235,7 @@ typingBox.innerHTML = "Error Loading Messages.";
 
 }
 
-
-
-// SEND MESSAGE
+// Send message
 async function sendMessage(message){
 
 typingBox.innerHTML = "Sending.";
@@ -244,9 +263,7 @@ typingBox.innerHTML = "Error Sending Message.";
 
 }
 
-
-
-// ENTER KEY SEND
+// Enter key message
 input.addEventListener("keypress",function(e){
 
 if(e.key === "Enter"){
@@ -271,7 +288,7 @@ pendingImage = null;
 
 });
 
-// SEND BUTTON CLICK
+// Send button click
 sendBtn.onclick = function(){
 
 const msg = input.value.trim();
@@ -296,14 +313,14 @@ updateJumpButton();
 
 };
 
-// IMAGE SEND
+// Image sending
 imageInput.addEventListener("change", function(e){
 
 const file = e.target.files[0];
 if(!file) return;
 
-if(file.size > 100 * 1024 * 1024){
-alert("File too large. Maximum size is 100MB.");
+if(file.size > 5 * 1024 * 1024){
+alert("File too large. Maximum size is 5MB.");
 imageInput.value = "";
 return;
 }
@@ -314,8 +331,8 @@ reader.onload = function(event){
 
 pendingImage = event.target.result;
 
-/* put indicator inside message box */
-input.value = "[Image File Selected: " + file.name + " Delete this text to cancel]";
+// Indicator inside the message box.
+input.value = "[Image File Selected: " + file.name + "] Delete this text to cancel";
 
 };
 
@@ -325,145 +342,45 @@ imageInput.value = "";
 
 });
 
+//Calendar
+const calendar = document.getElementById("calendar");
 
+function renderCalendar() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const monthName = now.toLocaleString('default', { month: 'long' });
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+  let html = '<table class="calendar-table">';
+  html += '<tr><th colspan="7">' + monthName + ' ' + year + '</th></tr>';
+  html += '<tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>';
 
-// SERVER STRESS LOAD GRAPH
-const stressCanvas = document.getElementById("stressCanvas");
-const stressCtx = stressCanvas.getContext("2d");
-const cpuValue = document.getElementById("cpuValue");
-const memValue = document.getElementById("memValue");
-const netValue = document.getElementById("netValue");
-
-let stressData = {
-  cpu: [],
-  memory: [],
-  network: [],
-  currentCPU: 20,
-  currentMemory: 35,
-  currentNetwork: 15
-};
-
-// Initialize data
-for(let i = 0; i < 100; i++){
-  stressData.cpu.push(Math.random() * 30 + 15);
-  stressData.memory.push(Math.random() * 25 + 30);
-  stressData.network.push(Math.random() * 20 + 10);
-}
-
-function generateStressData(){
-  // Simulate realistic stress values with slight variations
-  stressData.currentCPU += (Math.random() - 0.5) * 8;
-  stressData.currentMemory += (Math.random() - 0.5) * 6;
-  stressData.currentNetwork += (Math.random() - 0.5) * 10;
-
-  // Keep values in reasonable bounds
-  stressData.currentCPU = Math.max(5, Math.min(100, stressData.currentCPU));
-  stressData.currentMemory = Math.max(20, Math.min(95, stressData.currentMemory));
-  stressData.currentNetwork = Math.max(0, Math.min(100, stressData.currentNetwork));
-
-  // Add occasional spikes
-  if(Math.random() < 0.05){
-    stressData.currentCPU = Math.min(100, stressData.currentCPU + 20);
-  }
-  if(Math.random() < 0.03){
-    stressData.currentMemory = Math.min(95, stressData.currentMemory + 15);
-  }
-
-  stressData.cpu.push(stressData.currentCPU);
-  stressData.memory.push(stressData.currentMemory);
-  stressData.network.push(stressData.currentNetwork);
-
-  // Keep only last 100 data points
-  if(stressData.cpu.length > 100){
-    stressData.cpu.shift();
-    stressData.memory.shift();
-    stressData.network.shift();
-  }
-}
-
-function getColorForValue(value){
-  if(value < 30) return "#00ff00"; // Green - Normal
-  if(value < 70) return "#ffff00"; // Yellow - Warning
-  return "#ff0000"; // Red - Critical
-}
-
-function drawStressGraph(){
-  const width = stressCanvas.width;
-  const height = stressCanvas.height;
-  const pixelsPerPoint = width / 100;
-
-  // Clear canvas
-  stressCtx.fillStyle = "#000000";
-  stressCtx.fillRect(0, 0, width, height);
-
-  // Draw grid
-  stressCtx.strokeStyle = "#003300";
-  stressCtx.lineWidth = 1;
-  for(let i = 0; i <= 10; i++){
-    const y = (height / 10) * i;
-    stressCtx.beginPath();
-    stressCtx.moveTo(0, y);
-    stressCtx.lineTo(width, y);
-    stressCtx.stroke();
-  }
-
-  // Function to draw a line graph
-  function drawLine(data, color, offsetY){
-    stressCtx.strokeStyle = color;
-    stressCtx.lineWidth = 2;
-    stressCtx.beginPath();
-
-    for(let i = 0; i < data.length; i++){
-      const x = i * pixelsPerPoint;
-      const y = height - (data[i] / 100) * (height - offsetY) - offsetY;
-
-      if(i === 0){
-        stressCtx.moveTo(x, y);
+  let day = 1;
+  for (let i = 0; i < 6; i++) {
+    html += '<tr>';
+    for (let j = 0; j < 7; j++) {
+      if (i === 0 && j < firstDay) {
+        html += '<td></td>';
+      } else if (day > daysInMonth) {
+        html += '<td></td>';
       } else {
-        stressCtx.lineTo(x, y);
+        const isToday = day === now.getDate() ? ' class="today"' : '';
+        html += '<td' + isToday + '>' + day + '</td>';
+        day++;
       }
     }
-    stressCtx.stroke();
+    html += '</tr>';
+    if (day > daysInMonth) break;
   }
+  html += '</table>';
 
-  // Draw the three graphs with slight vertical offset for visibility
-  drawLine(stressData.cpu, "#00ff00", 5);      // Green for CPU
-  drawLine(stressData.memory, "#ffff00", 3);   // Yellow for Memory
-  drawLine(stressData.network, "#ff5500", 1);  // Orange for Network
-
-  // Draw current values text
-  stressCtx.fillStyle = "#00ff00";
-  stressCtx.font = "11px Consolas";
-  stressCtx.fillText("CPU", 5, 15);
-
-  stressCtx.fillStyle = "#ffff00";
-  stressCtx.fillText("MEM", 40, 15);
-
-  stressCtx.fillStyle = "#ff5500";
-  stressCtx.fillText("NET", 75, 15);
+  calendar.innerHTML = html;
 }
 
-function updateStressDisplay(){
-  generateStressData();
-  drawStressGraph();
-
-  cpuValue.textContent = Math.round(stressData.currentCPU);
-  memValue.textContent = Math.round(stressData.currentMemory);
-  netValue.textContent = Math.round(stressData.currentNetwork);
-
-  cpuValue.style.color = getColorForValue(stressData.currentCPU);
-  memValue.style.color = getColorForValue(stressData.currentMemory);
-  netValue.style.color = getColorForValue(stressData.currentNetwork);
-}
-
-function startStressGraph(){
-  drawStressGraph();
-  setInterval(updateStressDisplay, 1000);
-}
-
-// START GRAPH ON PAGE LOAD
-startStressGraph();
+// Calendar loading
+renderCalendar();
 
 function updateJumpButton(){
 
