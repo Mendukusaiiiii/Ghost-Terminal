@@ -30,7 +30,7 @@ padding:0;
 
 #loginBtn {
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0s, color 0s;
 }
 
 #loginBtn:hover {
@@ -54,7 +54,7 @@ padding:0;
     background: black;
     color: #00ff00;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0s, color 0s;
     font-family: inherit;
     font-size: 0.9em;
 }
@@ -142,6 +142,10 @@ margin-top:5px;
 #imageInput::file-selector-button:hover {
     background: #00ff00;
     color: black;
+}
+
+#imageInput.rainbow-border::file-selector-button {
+    animation: rainbow 2s linear infinite;
 }
 
 #inputRow{
@@ -238,6 +242,42 @@ margin-bottom:10px;
 @keyframes pulse {
     0%, 100% { opacity: 0.5; }
     50% { opacity: 1; }
+}
+
+.rainbow-border {
+    animation: rainbow 2s linear infinite;
+}
+
+.rainbow-text {
+    animation: rainbow-text 2s linear infinite;
+}
+
+@keyframes rainbow {
+    0% { border-color: #ff0000; }
+    10% { border-color: #ff8000; }
+    20% { border-color: #ffff00; }
+    30% { border-color: #80ff00; }
+    40% { border-color: #00ff00; }
+    50% { border-color: #00ff80; }
+    60% { border-color: #00ffff; }
+    70% { border-color: #0080ff; }
+    80% { border-color: #0000ff; }
+    90% { border-color: #8000ff; }
+    100% { border-color: #ff00ff; }
+}
+
+@keyframes rainbow-text {
+    0% { color: #ff0000; }
+    10% { color: #ff8000; }
+    20% { color: #ffff00; }
+    30% { color: #80ff00; }
+    40% { color: #00ff00; }
+    50% { color: #00ff80; }
+    60% { color: #00ffff; }
+    70% { color: #0080ff; }
+    80% { color: #0000ff; }
+    90% { color: #8000ff; }
+    100% { color: #ff00ff; }
 }
 
 
@@ -406,6 +446,7 @@ padding:10px;
 width:80%;
 font-size:18px;
 padding:10px;
+
 }
 
 #header{
@@ -425,6 +466,7 @@ font-size:14px;
 font-size:9px;
 line-height:9px;
 overflow-x:auto;
+
 }
 
 }

@@ -32,6 +32,7 @@ const aboutBox = document.getElementById("aboutBox");
 let user = "";
 let lastMessageCount = 0;
 let serverOnline = false;
+let easterEggActive = false;
 
 let loadInterval;
 let statusInterval;
@@ -40,6 +41,7 @@ let pendingImage = null;
 const statusIndicator = document.getElementById("statusIndicator");
 const statusText = document.getElementById("statusText");
 const serverStatus = document.getElementById("serverStatus");
+const danceAudio = document.getElementById("danceAudio");
 
 
 // Login
@@ -132,6 +134,7 @@ const line = document.createElement("div");
 
 const time = document.createElement("span");
 time.className = "timestamp";
+if (easterEggActive) time.classList.add('rainbow-text');
 
 if(timestamp){
 const d = new Date(timestamp);
@@ -144,6 +147,7 @@ line.appendChild(time);
 
 const userLabel = document.createElement("span");
 userLabel.className = "username";
+if (easterEggActive) userLabel.classList.add('rainbow-text');
 userLabel.textContent = username + "> ";
 line.appendChild(userLabel);
 
@@ -162,6 +166,7 @@ line.appendChild(img);
 
 const textSpan = document.createElement("span");
 textSpan.className = "messageContent";
+if (easterEggActive) textSpan.classList.add('rainbow-text');
 textSpan.innerHTML = makeLinksClickable(content);
 line.appendChild(textSpan);
 
@@ -263,6 +268,82 @@ typingBox.innerHTML = "Error Sending Message.";
 
 }
 
+// Confetti function
+function createPixelConfetti() {
+    const colors = ['#ff0000', '#ff8000', '#ffff00', '#80ff00', '#00ff00', '#00ff80', '#00ffff', '#0080ff', '#0000ff', '#8000ff', '#ff00ff', '#ff0080'];
+    
+    function dropConfetti() {
+        if (!easterEggActive) return; // Stop if Easter egg is deactivated
+        
+        const confettiCount = 5; // Fewer pieces per drop for continuous effect
+        
+        for (let i = 0; i < confettiCount; i++) {
+            const confetti = document.createElement('div');
+            confetti.style.position = 'fixed';
+            confetti.style.width = '6px';
+            confetti.style.height = '6px';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = Math.random() * window.innerWidth + 'px';
+            confetti.style.top = '-10px';
+            confetti.style.zIndex = '9999';
+            confetti.style.pointerEvents = 'none';
+            
+            document.body.appendChild(confetti);
+            
+            // Animate falling
+            const animation = confetti.animate([
+                { transform: 'translateY(0px) rotate(0deg)', opacity: 1 },
+                { transform: `translateY(${window.innerHeight + 20}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+            ], {
+                duration: 3000 + Math.random() * 2000,
+                easing: 'ease-out'
+            });
+            
+            animation.onfinish = () => {
+                confetti.remove();
+            };
+        }
+    }
+    
+    // Start continuous confetti
+    dropConfetti(); // Initial drop
+    const confettiInterval = setInterval(dropConfetti, 200); // Drop every 200ms
+    
+    // Store interval ID to potentially clear it later if needed
+    window.confettiInterval = confettiInterval;
+}
+
+// Easter egg function
+function triggerEasterEgg() {
+    easterEggActive = true;
+
+    // Add rainbow border to main UI elements
+    const selectors = [
+        '#calendarContainer', '#aboutContent', '#loginBtn',
+        '#aboutBtn', '#closeAboutBtn', '#imageInput'
+    ];
+
+    selectors.forEach(selector => {
+        const el = document.querySelector(selector);
+        if (el) el.classList.add('rainbow-border');
+    });
+
+    // Add rainbow text to existing message elements
+    const messageElements = document.querySelectorAll('.timestamp, .username, .messageContent');
+    messageElements.forEach(el => {
+        el.classList.add('rainbow-text');
+    });
+
+    // Create pixel confetti
+    createPixelConfetti();
+
+    // Play audio
+    danceAudio.play().catch(e => console.log('Audio play failed:', e));
+
+    // Rainbow effect continues indefinitely
+}
+
+
 // Enter key message
 input.addEventListener("keypress",function(e){
 
@@ -271,10 +352,14 @@ if(e.key === "Enter"){
 const msg = input.value.trim();
 
 if(msg !== ""){
-sendMessage(msg);
+    if(msg.toLowerCase() === "dancin") {
+        triggerEasterEgg();
+        input.value = "";
+    } else {
+        sendMessage(msg);
+        input.value = "";
+    }
 }
-
-input.value="";
 
 }
 
@@ -299,8 +384,13 @@ pendingImage = null;
 input.value = "";
 }
 else if(msg !== ""){
-sendMessage(msg);
-input.value = "";
+    if(msg.toLowerCase() === "dancin") {
+        triggerEasterEgg();
+        input.value = "";
+    } else {
+        sendMessage(msg);
+        input.value = "";
+    }
 }
 
 };
