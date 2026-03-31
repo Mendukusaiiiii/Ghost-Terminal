@@ -534,4 +534,24 @@ color:black;
 transform:scale(0.96);
 }
 
+#importLogBtn{
+width:100%;
+margin:5px 0;
+background:black;
+color:#00ff00;
+border:1px solid #00ff00;
+padding:4px;
+cursor:pointer;
+font-family:inherit;
+}
+
+#importLogBtn:hover{
+background:#00ff00;
+color:black;
+}
+
+#importLogBtn:active{
+transform:scale(0.96);
+}
+
 

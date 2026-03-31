@@ -28,6 +28,7 @@ const jumpBtn = document.getElementById("jumpBtn");
 const aboutBtn = document.getElementById("aboutBtn");
 const closeAboutBtn = document.getElementById("closeAboutBtn");
 const aboutBox = document.getElementById("aboutBox");
+const importLogBtn = document.getElementById("importLogBtn");
 
 let user = "";
 let lastMessageCount = 0;
@@ -99,6 +100,27 @@ aboutBtn.onclick = function(){
 closeAboutBtn.onclick = function(){
   aboutBox.style.display = "none";
 };
+
+// Import log as image
+importLogBtn.onclick = function(){
+  const chat = document.getElementById('chat');
+  const clone = chat.cloneNode(true);
+  clone.style.height = 'auto';
+  clone.style.overflow = 'visible';
+  clone.style.position = 'absolute';
+  clone.style.left = '-9999px';
+  clone.style.top = '-9999px';
+  clone.style.background = 'black';
+  document.body.appendChild(clone);
+  
+  html2canvas(clone).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'message_log.png';
+    link.href = canvas.toDataURL();
+    link.click();
+    document.body.removeChild(clone);
+  });
+};;;
 
 
 // Check server status
