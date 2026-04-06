@@ -44,7 +44,6 @@
 
 </div>
 
-
 <div id="terminal" style="display:none">
 
 <div id="title">
@@ -79,8 +78,6 @@ Server: <span id="statusIndicator">●</span> <span id="statusText">Checking.</s
 <button id="sendBtn">Send</button>
 </div>
 
-
-
 <input type="file" id="imageInput" accept="image/*,.gif" style="margin-top:5px;">
 
 <button id="importLogBtn">Import Message Log</button>
@@ -90,13 +87,20 @@ Server: <span id="statusIndicator">●</span> <span id="statusText">Checking.</s
 </div>
 
 <audio id="danceAudio" preload="auto">
-  <!-- Add your dance audio file to Assets/dance.mp3 -->
+ 
   <source src="Assets/Caramella Girls - Caramelldansen (Swedish Original).mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
+  Your browser does not support audio.
 </audio>
 
 <script src="script.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<script>
+const API = (function() {
+  const encoded = "aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J5VDlqTndpMTU2REpuM1B1YnJucnVXbHhaX1VkYl9nQzVCY2hBRlpEVXRTQXRkZ1pGdlJ5NEg2dEZmelVNUXZHbFMvZXhlYw==";
+  return atob(encoded);
+})();
+</script>
 
 </body>
 </html>

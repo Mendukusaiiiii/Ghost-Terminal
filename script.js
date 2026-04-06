@@ -1,9 +1,6 @@
 //what are you looking at. ._.
 
 
-const API = "https://script.google.com/macros/s/AKfycbyT9jNwi156DJn3PubrnruWlxZ_Udb_gC5BchAFZDUtSAtdgZFvRy4H6tFfzUMQvGlS/exec";
-
-
 document.addEventListener("dragover", function(e) {
     e.preventDefault();
 });
