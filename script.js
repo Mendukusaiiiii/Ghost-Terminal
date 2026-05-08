@@ -36,6 +36,41 @@ let loadInterval;
 let statusInterval;
 let pendingImage = null;
 
+const profanityList = [
+  "fuck",
+  "shit",
+  "bitch",
+  "bastard",
+  "asshole",
+  "damn",
+  "crap",
+  "dick",
+  "pussy",
+  "nigger",
+  "cunt",
+  "slut",
+  "fag",
+  "whore",
+  "twat"
+];
+
+function containsProfanity(text) {
+  if (!text) return false;
+  const normalized = text.toLowerCase();
+  return profanityList.some(word => {
+    const regex = new RegExp(`\\b${word.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&")}\\b`, "i");
+    return regex.test(normalized);
+  });
+}
+
+function blockProfanity(message) {
+  if (containsProfanity(message)) {
+    typingBox.innerHTML = "Profanity Detected.";
+    return true;
+  }
+  return false;
+}
+
 const statusIndicator = document.getElementById("statusIndicator");
 const statusText = document.getElementById("statusText");
 const serverStatus = document.getElementById("serverStatus");
@@ -46,6 +81,11 @@ const danceAudio = document.getElementById("danceAudio");
 loginBtn.onclick = function(){
 
 let name = usernameInput.value.trim();
+
+if (containsProfanity(name)) {
+  typingBox.innerHTML = "Username may not contain profanity.";
+  return;
+}
 
 if(name === ""){
 name = "Anonymous" + Math.floor(Math.random()*10000);
@@ -374,7 +414,7 @@ if(msg !== ""){
     if(msg.toLowerCase() === "dancin") {
         triggerEasterEgg();
         input.value = "";
-    } else {
+    } else if (!blockProfanity(msg)) {
         sendMessage(msg);
         input.value = "";
     }
@@ -406,7 +446,7 @@ else if(msg !== ""){
     if(msg.toLowerCase() === "dancin") {
         triggerEasterEgg();
         input.value = "";
-    } else {
+    } else if (!blockProfanity(msg)) {
         sendMessage(msg);
         input.value = "";
     }
