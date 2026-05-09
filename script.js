@@ -36,6 +36,358 @@ let loadInterval;
 let statusInterval;
 let pendingImage = null;
 
+
+let gameActive = false;
+let gameMenu = false;
+let shooterX = 5;
+let shooterY = 10;let prevshooterX = 5;
+let prevshooterY = 10;let shooterDir = 'right'; // 'up', 'down', 'left', 'right'
+let bullets = [];
+let enemyBullets = [];
+let effects = [];
+let targets = [];
+let score = 0;
+let health = 3;
+let shells = 10;
+let moveCounter = 0;
+let width = 20;
+const height = 15;
+let gameInterval;
+let ammoInterval;
+let spawnInterval;
+
+const shooterChars = {
+    up: '^',
+    down: 'v',
+    left: '<',
+    right: '>'
+};
+
+function showGameMenu() {
+    gameMenu = true;
+    clearInterval(loadInterval);
+    chat.innerHTML = '<pre>Shooter Game\n \nType START to begin the game\nType EXIT to return to terminal</pre>';
+    chat.scrollTop = chat.scrollHeight;
+    input.style.display = 'block';
+    jumpBtn.style.display = 'none';
+    sendBtn.style.display = 'none';
+    imageInput.style.display = 'none';
+    typingBox.innerHTML = 'Enter Your Choice:';
+}
+
+function initGame() {
+    gameActive = true;
+    // Calculate width based on chat container width
+    width = Math.floor(chat.clientWidth / 8) - 2; // Approximate character width
+    if (width < 10) width = 10; // Minimum width
+    if (width > 40) width = 40; // Maximum width
+    
+    shooterX = Math.floor(width / 2);
+    shooterY = 10;
+    prevshooterX = shooterX;
+    prevshooterY = shooterY;
+    shooterDir = 'right';
+    bullets = [];
+    enemyBullets = [];
+    effects = [];
+    targets = [];
+    score = 0;
+    health = 5;
+    shells = 10;
+    moveCounter = 0;
+    // Add some targets
+    for (let i = 0; i < 5; i++) {
+        let side = Math.floor(Math.random() * 4);
+        let t = {x: 0, y: 0, dir: 'right'};
+        if (side === 0) { // left
+            t.x = -1;
+            t.y = Math.floor(Math.random() * height);
+            t.dir = 'right';
+        } else if (side === 1) { // right
+            t.x = width;
+            t.y = Math.floor(Math.random() * height);
+            t.dir = 'left';
+        } else if (side === 2) { // top
+            t.x = Math.floor(Math.random() * width);
+            t.y = -1;
+            t.dir = 'down';
+        } else { // bottom
+            t.x = Math.floor(Math.random() * width);
+            t.y = height;
+            t.dir = 'up';
+        }
+        targets.push(t);
+    }
+    clearInterval(loadInterval); // Pause chat loading
+    renderGame();
+    input.style.display = 'none';
+    jumpBtn.style.display = 'none';
+    sendBtn.style.display = 'none';
+    imageInput.style.display = 'none';
+    typingBox.innerHTML = 'Shooter Game';
+    gameInterval = setInterval(updateGame, 200); // Update every 200ms
+    ammoInterval = setInterval(() => {
+        if (shells < 10) {
+            shells++;
+            renderGame();
+        }
+    }, 10000); // Replenish ammo every 10 seconds
+    spawnInterval = setInterval(spawnTarget, 20000); // Spawn a new enemy every 20 seconds
+}
+
+function spawnTarget() {
+    let side = Math.floor(Math.random() * 4);
+    let t = {x: 0, y: 0, dir: 'right'};
+    if (side === 0) { // left
+        t.x = -1;
+        t.y = Math.floor(Math.random() * height);
+        t.dir = 'right';
+    } else if (side === 1) { // right
+        t.x = width;
+        t.y = Math.floor(Math.random() * height);
+        t.dir = 'left';
+    } else if (side === 2) { // top
+        t.x = Math.floor(Math.random() * width);
+        t.y = -1;
+        t.dir = 'down';
+    } else { // bottom
+        t.x = Math.floor(Math.random() * width);
+        t.y = height;
+        t.dir = 'up';
+    }
+    targets.push(t);
+}
+
+function renderGame() {
+    let board = Array(height).fill().map(() => Array(width).fill().map(() => ({char: '.', type: 'field'})));
+    
+    // Draw shooter
+    board[shooterY][shooterX] = {char: shooterChars[shooterDir], type: 'player'};
+    
+    // Draw bullets
+    bullets.forEach(b => {
+        if (b.x >= 0 && b.x < width && b.y >= 0 && b.y < height) {
+            board[b.y][b.x] = {char: '*', type: 'bullet'};
+        }
+    });
+    
+    // Draw enemy bullets
+    enemyBullets.forEach(b => {
+        if (b.x >= 0 && b.x < width && b.y >= 0 && b.y < height) {
+            board[b.y][b.x] = {char: 'o', type: 'enemy-bullet'};
+        }
+    });
+    
+    // Draw effects
+    effects.forEach(e => {
+        if (e.x >= 0 && e.x < width && e.y >= 0 && e.y < height) {
+            board[e.y][e.x] = {char: '#', type: 'effect'};
+        }
+    });
+    
+    // Draw targets
+    targets.forEach(t => {
+        if (t.x >= 0 && t.x < width && t.y >= 0 && t.y < height) {
+            board[t.y][t.x] = {char: 'X', type: 'enemy'};
+        }
+    });
+    
+    // Convert to colored HTML
+    let display = '';
+    display += '<pre class="shooter-game-board">';
+    board.forEach(row => {
+        row.forEach(cell => {
+            let className = 'shooter-' + cell.type;
+            display += `<span class="${className}">${cell.char}</span>`;
+        });
+        display += '\n';
+    });
+    display += `<span class="shooter-field">\n\nScore: ${score}\n`;
+    display += `Health: <span class="shooter-player">${'█'.repeat(health)}</span><span class="shooter-field">${'░'.repeat(5 - health)}</span>\n`;
+    display += `Shells: ${shells}\n</span></pre>`;
+    
+    chat.innerHTML = display;
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function updateGame() {
+    moveCounter++;
+    
+    // Clear effects
+    effects = [];
+    
+    // Move bullets
+    bullets = bullets.map(b => {
+        if (b.dir === 'up') b.y--;
+        else if (b.dir === 'down') b.y++;
+        else if (b.dir === 'left') b.x--;
+        else if (b.dir === 'right') b.x++;
+        return b;
+    }).filter(b => b.x >= 0 && b.x < width && b.y >= 0 && b.y < height);
+    
+    // Move enemy bullets
+    enemyBullets = enemyBullets.map(b => {
+        if (b.dir === 'up') b.y--;
+        else if (b.dir === 'down') b.y++;
+        else if (b.dir === 'left') b.x--;
+        else if (b.dir === 'right') b.x++;
+        return b;
+    }).filter(b => b.x >= 0 && b.x < width && b.y >= 0 && b.y < height);
+    
+    // Move targets
+    if (moveCounter % 2 === 0) {
+        targets.forEach(t => {
+            let onBoard = t.x >= 0 && t.x < width && t.y >= 0 && t.y < height;
+            if (!onBoard) {
+                // Move inward
+                if (t.dir === 'right') t.x++;
+                else if (t.dir === 'left') t.x--;
+                else if (t.dir === 'down') t.y++;
+                else if (t.dir === 'up') t.y--;
+            } else {
+                // Random movement
+                let dir = Math.floor(Math.random() * 4);
+                if (dir === 0 && t.y > 0) t.y--; // up
+                else if (dir === 1 && t.y < height - 1) t.y++; // down
+                else if (dir === 2 && t.x > 0) t.x--; // left
+                else if (dir === 3 && t.x < width - 1) t.x++; // right
+            }
+        });
+    }
+    
+    // Targets shoot occasionally with prediction
+    targets.forEach(t => {
+        if (t.x >= 0 && t.x < width && t.y >= 0 && t.y < height && Math.random() < 0.05) { // 5% chance each update, only if on board
+            let dx = shooterX - prevshooterX;
+            let dy = shooterY - prevshooterY;
+            let predictedX = shooterX + dx;
+            let predictedY = shooterY + dy;
+            
+            let dir;
+            let deltaX = predictedX - t.x;
+            let deltaY = predictedY - t.y;
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                dir = deltaX > 0 ? 'right' : 'left';
+            } else {
+                dir = deltaY > 0 ? 'down' : 'up';
+            }
+            enemyBullets.push({x: t.x, y: t.y, dir: dir});
+        }
+    });
+    
+    // Check enemy bullet collisions with shooter
+    enemyBullets.forEach((b, bi) => {
+        if (b.x === shooterX && b.y === shooterY) {
+            effects.push({x: b.x, y: b.y});
+            health--;
+            enemyBullets.splice(bi, 1);
+        }
+    });
+    
+    // Check target collisions with shooter
+    targets.forEach((t, ti) => {
+        if (t.x >= 0 && t.x < width && t.y >= 0 && t.y < height && t.x === shooterX && t.y === shooterY) {
+            effects.push({x: t.x, y: t.y});
+            // Push the enemy away from the shooter
+            let pushDirX = t.x - shooterX;
+            let pushDirY = t.y - shooterY;
+            
+            if (pushDirX !== 0 || pushDirY !== 0) {
+                if (Math.abs(pushDirX) > Math.abs(pushDirY)) {
+                    // Push horizontally
+                    if (pushDirX > 0 && t.x < width - 1) t.x++;
+                    else if (pushDirX < 0 && t.x > 0) t.x--;
+                } else {
+                    // Push vertically
+                    if (pushDirY > 0 && t.y < height - 1) t.y++;
+                    else if (pushDirY < 0 && t.y > 0) t.y--;
+                }
+            }
+            // No health loss, no points, no new target spawned
+        }
+    });
+    
+    // Check bullet collisions with enemy bullets
+    for (let bi = bullets.length - 1; bi >= 0; bi--) {
+        for (let ebi = enemyBullets.length - 1; ebi >= 0; ebi--) {
+            if (bullets[bi].x === enemyBullets[ebi].x && bullets[bi].y === enemyBullets[ebi].y) {
+                effects.push({x: bullets[bi].x, y: bullets[bi].y});
+                bullets.splice(bi, 1);
+                enemyBullets.splice(ebi, 1);
+                score += 5;
+                break; // Only one collision per bullet
+            }
+        }
+    }
+    
+    // Check bullet collisions with targets
+    for (let bi = bullets.length - 1; bi >= 0; bi--) {
+        for (let ti = targets.length - 1; ti >= 0; ti--) {
+            if (bullets[bi].x === targets[ti].x && bullets[bi].y === targets[ti].y) {
+                effects.push({x: bullets[bi].x, y: bullets[bi].y});
+                bullets.splice(bi, 1);
+                targets.splice(ti, 1);
+                score += 10;
+                // Add new target
+                let side = Math.floor(Math.random() * 4);
+                let t = {x: 0, y: 0, dir: 'right'};
+                if (side === 0) { // left
+                    t.x = -1;
+                    t.y = Math.floor(Math.random() * height);
+                    t.dir = 'right';
+                } else if (side === 1) { // right
+                    t.x = width;
+                    t.y = Math.floor(Math.random() * height);
+                    t.dir = 'left';
+                } else if (side === 2) { // top
+                    t.x = Math.floor(Math.random() * width);
+                    t.y = -1;
+                    t.dir = 'down';
+                } else { // bottom
+                    t.x = Math.floor(Math.random() * width);
+                    t.y = height;
+                    t.dir = 'up';
+                }
+                targets.push(t);
+                break;
+            }
+        }
+    }
+    
+    // Check game over
+    if (health <= 0) {
+        endGame(true);
+        return;
+    }
+    
+    renderGame();
+}
+
+function shoot() {
+    if (shells > 0) {
+        bullets.push({x: shooterX, y: shooterY, dir: shooterDir});
+        shells--;
+    }
+}
+
+function endGame(isGameOver = false) {
+    gameActive = false;
+    clearInterval(gameInterval);
+    clearInterval(ammoInterval);
+    clearInterval(spawnInterval);
+    input.style.display = 'block';
+    jumpBtn.style.display = 'block';
+    sendBtn.style.display = 'block';
+    imageInput.style.display = 'block';
+    typingBox.innerHTML = '';
+    chat.innerHTML = ''; // Clear game
+    if (isGameOver) {
+        sendMessage("Shooter Game Score: " + score);
+    }
+    loadMessages(); // Reload chat
+    loadInterval = setInterval(loadMessages,2000); // Restart chat loading
+}
+
 const profanityList = [
   "fuck",
   "shit",
@@ -237,6 +589,11 @@ chat.appendChild(line);
 // Load message
 async function loadMessages(){
 
+if (gameActive || gameMenu) {
+    typingBox.innerHTML = "";
+    return;
+}
+
 try{
 
 typingBox.innerHTML = "Loading Message.";
@@ -411,7 +768,27 @@ if(e.key === "Enter"){
 const msg = input.value.trim();
 
 if(msg !== ""){
-    if(msg.toLowerCase() === "dancin") {
+    if(gameMenu) {
+        if(msg.toUpperCase() === "START") {
+            gameMenu = false;
+            initGame();
+        } else if(msg.toUpperCase() === "EXIT") {
+            gameMenu = false;
+            input.value = "";
+            typingBox.innerHTML = "";
+            jumpBtn.style.display = 'block';
+            sendBtn.style.display = 'block';
+            imageInput.style.display = 'block';
+            chat.innerHTML = "";
+            loadMessages();
+        } else {
+            typingBox.innerHTML = "Invalid choice. Type START or EXIT.";
+        }
+        input.value = "";
+    } else if(msg.toLowerCase() === "t@nk") {
+        showGameMenu();
+        input.value = "";
+    } else if(msg.toLowerCase() === "dancin") {
         triggerEasterEgg();
         input.value = "";
     } else if (!blockProfanity(msg)) {
@@ -432,6 +809,44 @@ pendingImage = null;
 
 });
 
+// Game controls
+document.addEventListener("keydown", function(e) {
+    if (!gameActive) return;
+    
+    let oldX = shooterX;
+    let oldY = shooterY;
+    
+    switch(e.key.toLowerCase()) {
+        case 'w':
+            shooterDir = 'up';
+            if (shooterY > 0) shooterY--;
+            break;
+        case 's':
+            shooterDir = 'down';
+            if (shooterY < height - 1) shooterY++;
+            break;
+        case 'a':
+            shooterDir = 'left';
+            if (shooterX > 0) shooterX--;
+            break;
+        case 'd':
+            shooterDir = 'right';
+            if (shooterX < width - 1) shooterX++;
+            break;
+        case ' ':
+            e.preventDefault();
+            shoot();
+            break;
+    }
+    
+    if (shooterX !== oldX || shooterY !== oldY) {
+        prevshooterX = oldX;
+        prevshooterY = oldY;
+    }
+    
+    renderGame();
+});
+
 // Send button click
 sendBtn.onclick = function(){
 
@@ -443,7 +858,27 @@ pendingImage = null;
 input.value = "";
 }
 else if(msg !== ""){
-    if(msg.toLowerCase() === "dancin") {
+    if(gameMenu) {
+        if(msg.toUpperCase() === "START") {
+            gameMenu = false;
+            initGame();
+        } else if(msg.toUpperCase() === "EXIT") {
+            gameMenu = false;
+            input.value = "";
+            typingBox.innerHTML = "";
+            jumpBtn.style.display = 'block';
+            sendBtn.style.display = 'block';
+            imageInput.style.display = 'block';
+            chat.innerHTML = "";
+            loadMessages();
+        } else {
+            typingBox.innerHTML = "Invalid choice. Type START or EXIT.";
+        }
+        input.value = "";
+    } else if(msg.toLowerCase() === "t@nk") {
+        showGameMenu();
+        input.value = "";
+    } else if(msg.toLowerCase() === "dancin") {
         triggerEasterEgg();
         input.value = "";
     } else if (!blockProfanity(msg)) {
@@ -532,6 +967,11 @@ function renderCalendar() {
 renderCalendar();
 
 function updateJumpButton(){
+
+if (gameActive) {
+    jumpBtn.style.display = "none";
+    return;
+}
 
 const nearBottom =
 chat.scrollHeight - chat.scrollTop - chat.clientHeight < 10;

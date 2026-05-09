@@ -554,3 +554,36 @@ color:black;
 transform:scale(0.96);
 }
 
+
+.shooter-game-board {
+    font-family: monospace;
+    white-space: pre;
+    letter-spacing: 2px;
+}
+
+.shooter-player {
+    color: #00ffff;
+    font-weight: bold;
+}
+
+.shooter-bullet {
+    color: #00ffff;
+}
+
+.shooter-field {
+    color: #00aa00;
+}
+
+.shooter-enemy {
+    color: #ff0000;
+    font-weight: bold;
+}
+
+.shooter-enemy-bullet {
+    color: #ff0000;
+}
+
+.shooter-effect {
+    color: #ffaa00;
+    font-weight: bold;
+}
