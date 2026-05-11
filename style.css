@@ -92,6 +92,7 @@ margin:40px auto;
 
 height:400px;
 overflow-y:auto;
+overflow-x:auto;
 border:1px solid #00ff00;
 padding:10px;
 box-sizing: border-box;
@@ -514,6 +515,24 @@ background:#00ff00;
 background:#00cc00;
 }
 
+/* Horizontal scrollbar styling */
+#chat::-webkit-scrollbar:horizontal{
+height:10px;
+}
+
+#chat::-webkit-scrollbar-track:horizontal{
+background:black;
+border-top:1px solid #00ff00;
+}
+
+#chat::-webkit-scrollbar-thumb:horizontal{
+background:#00ff00;
+}
+
+#chat::-webkit-scrollbar-thumb:horizontal:hover{
+background:#00cc00;
+}
+
 #jumpBtn{
 width:100%;
 margin:5px 0;
@@ -566,8 +585,21 @@ transform:scale(0.96);
     font-weight: bold;
 }
 
+.shooter-player2 {
+    color: #00ff00;
+    font-weight: bold;
+}
+
 .shooter-bullet {
     color: #00ffff;
+}
+
+.shooter-bullet-p1 {
+    color: #00ffff;
+}
+
+.shooter-bullet-p2 {
+    color: #00ff00;
 }
 
 .shooter-field {
