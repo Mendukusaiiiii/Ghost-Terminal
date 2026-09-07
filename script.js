@@ -684,7 +684,7 @@ chat.appendChild(line);
 // Load message
 async function loadMessages(){
 
-if (gameActive || gameMenu) {
+if (gameActive || gameMenu || helpMode) {
     typingBox.innerHTML = "";
     return;
 }
@@ -696,11 +696,19 @@ typingBox.innerHTML = "Loading Message.";
 const res = await fetch(API);
 const data = await res.json();
 
+// Re-check: a command (/t@nk, /help, etc.) may have changed mode
+// while this fetch was in flight. If so, bail out without touching
+// the DOM so we don't clobber the game menu / help screen.
+if (gameActive || gameMenu || helpMode) {
+    return;
+}
+
 if(data.length === lastMessageCount){
   typingBox.innerHTML = "";
 }else{
   typingBox.innerHTML = "New Message!";
   setTimeout(function(){
+    if (gameActive || gameMenu || helpMode) return;
     typingBox.innerHTML = "";
   }, 1200);
 }
@@ -886,7 +894,7 @@ if(msg !== ""){
         input.value = "";
     } else if(helpMode) {
         const choice = msg.toUpperCase();
-        if(choice === "/exit") {
+        if(choice === "EXIT") {
             helpMode = false;
             input.value = "";
             typingBox.innerHTML = "";
@@ -1038,11 +1046,33 @@ else if(msg !== ""){
             typingBox.innerHTML = "Invalid choice. Type 1P, 2P, START or EXIT.";
         }
         input.value = "";
-    } else if(msg.toLowerCase() === "t@nk") {
+    } else if(helpMode) {
+        const choice = msg.toUpperCase();
+        if(choice === "EXIT") {
+            helpMode = false;
+            input.value = "";
+            typingBox.innerHTML = "";
+            jumpBtn.style.display = 'block';
+            sendBtn.style.display = 'block';
+            imageInput.style.display = 'block';
+            chat.innerHTML = "";
+            loadMessages();
+        } else {
+            typingBox.innerHTML = "Type EXIT to return to terminal.";
+        }
+        input.value = "";
+    } else if(msg.toLowerCase() === "/t@nk") {
         showGameMenu();
         input.value = "";
-    } else if(msg.toLowerCase() === "dancin") {
+    } else if(msg.toLowerCase() === "/dancin") {
         triggerEasterEgg();
+        input.value = "";
+    } else if(msg.toLowerCase() === "/help") {
+        showHelp();
+        input.value = "";
+    } else if(msg.toLowerCase() === "/back") {
+        chat.innerHTML = "";
+        loadMessages();
         input.value = "";
     } else if (!blockProfanity(msg)) {
         sendMessage(msg);
