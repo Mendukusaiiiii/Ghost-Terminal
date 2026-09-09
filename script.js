@@ -8,11 +8,6 @@ document.addEventListener("drop", function(e) {
     e.preventDefault();
 });
 
-// The real Google Apps Script URL now lives server-side only,
-// read from the GOOGLE_SCRIPT_URL environment variable in
-// /api/proxy.js. The browser only ever talks to this same-origin path.
-const API = "/api/proxy";
-
 const chat = document.getElementById("chat");
 const input = document.getElementById("input");
 const typingBox = document.getElementById("typing");
